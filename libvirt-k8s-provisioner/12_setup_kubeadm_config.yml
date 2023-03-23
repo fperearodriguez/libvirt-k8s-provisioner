@@ -1,0 +1,31 @@
+---
+- name: Prepare kubeadm-config for cluster setup
+  hosts: masters[0]
+  become: true
+  vars_files:
+    - "vars/{{ k8s_cluster_name }}_cluster.yml"
+  tasks:
+    - name: Process installation if cluster is not set
+      block:
+      - name: Generate cluster token
+        ansible.builtin.command: kubeadm token generate
+        register: kubetoken_generated
+
+      - name: Set generated token as fact
+        ansible.builtin.set_fact:
+          kubetoken: "{{ kubetoken_generated.stdout }}"
+
+      - name: Generate certificate key
+        ansible.builtin.command: kubeadm certs certificate-key
+        register: kubecert_generated
+
+      - name: Set generated token as fact
+        ansible.builtin.set_fact:
+          kubecertkey: "{{ kubecert_generated.stdout }}"
+
+      - name: Add kubelet config for node
+        ansible.builtin.template:
+          src: templates/kubeadm-config.yaml.j2
+          dest: /tmp/kubeadm-config.yaml
+          mode: 0755
+      when: k8s_installed is not defined
