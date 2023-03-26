@@ -1,0 +1,70 @@
+global
+    log /dev/log local0
+    log /dev/log local1 notice
+    daemon
+
+defaults
+    mode                    http
+    log                     global
+    option                  httplog
+    option                  dontlognull
+    option http-server-close
+    option forwardfor       except 127.0.0.0/8
+    option                  redispatch
+    retries                 1
+    timeout http-request    10s
+    timeout queue           20s
+    timeout connect         5s
+    timeout client          20s
+    timeout server          20s
+    timeout http-keep-alive 10s
+    timeout check           10s
+
+{% if k8s.control_plane.vms > 1  %}
+frontend kubernetes-control-plane
+    bind *:6443
+    default_backend kubernetes-control-plane
+    mode tcp
+    option tcplog
+
+backend kubernetes-control-plane
+    option httpchk GET /healthz
+    balance roundrobin
+    mode tcp
+    option ssl-hello-chk
+
+{% for node in groups['masters'] %}
+    server {{ hostvars[node].host_fqdn }} {{ hostvars[node].host_ip }}:6443 check
+{% endfor %}
+{% endif %}
+
+{% if ingress_controller.install_ingress_controller  %}
+frontend ingress_http_nodeport
+    bind *:80
+    default_backend ingress_http_nodeport
+    mode tcp
+    option tcplog
+
+backend ingress_http_nodeport
+    balance source
+    mode tcp
+
+{% for node in groups['workers'] %}
+    server {{ hostvars[node].host_fqdn }} {{ hostvars[node].host_ip }}:{{ ingress_controller.node_port.http }} check
+{% endfor %}
+
+frontend ingress_https_nodeport
+    bind *:443
+    default_backend ingress_https_nodeport
+    mode tcp
+    option tcplog
+
+backend ingress_https_nodeport
+    balance source
+    mode tcp
+
+{% for node in groups['workers'] %}
+    server {{ hostvars[node].host_fqdn }} {{ hostvars[node].host_ip }}:{{ ingress_controller.node_port.https }} check
+{% endfor %}
+
+{% endif %}

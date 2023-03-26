@@ -1,0 +1,9 @@
+services:
+  - http
+  - https
+
+internal_zone_port:
+  - "6443/tcp"
+
+packages:
+    - haproxy
