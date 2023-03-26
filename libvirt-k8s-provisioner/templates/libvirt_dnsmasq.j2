@@ -1,1 +1,0 @@
-server=/{{ k8s.network.domain }}/{{ k8s.network.network_cidr | ansible.utils.next_nth_usable(1) }}
