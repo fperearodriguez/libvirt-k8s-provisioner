@@ -39,7 +39,7 @@ The installer is able to provision multiple clusters in the same KVM network. Fo
     ...
     existing:
       role: primary
-      name: k8s-1
+      name: cluster-1
 ```
 
 **cluster-2**
@@ -51,7 +51,7 @@ The installer is able to provision multiple clusters in the same KVM network. Fo
     ...
     existing:
       role: secondary
-      name: k8s-1
+      name: cluster-1
 ```
 
 * **network_cird**: Same value in both vars files.
