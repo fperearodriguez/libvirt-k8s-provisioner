@@ -1,4 +1,4 @@
-# K8S on KVM - dedicated server
+# K8S on KVM
 Provision a Kubernetes cluster by using [libvirt-k8s-provisioner](https://github.com/kubealex/libvirt-k8s-provisioner).
 
 ## Prerequisites
@@ -12,7 +12,7 @@ ansible-galaxy collection install -r libvirt-k8s-provisioner/requirements.yml
 ## Environment plan
 The installer reads a vars file located under the [vars](./libvirt-k8s-provisioner/vars) folder. In this file we can set the K8S cluster's requirements.
 
-**TIP:** By default, the installer uses a file called _k8s_cluster.yml_. In order to be able to create multiple clusters, multiple vars files can be created and the file's prefix name must be set as variable when executing _ansible-playbook_ command.
+>:mag_right: By default, the installer uses a file called _k8s_cluster.yml_. In order to be able to create multiple clusters, multiple vars files can be created and the file's prefix name must be set as variable when executing _ansible-playbook_ command.
 
 For example, to use the file ***vars/k8s-1_cluster.yml***, run:
 ```bash
