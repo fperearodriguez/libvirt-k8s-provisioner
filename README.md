@@ -61,7 +61,7 @@ The installer is able to provision multiple clusters in the same KVM network. Fo
   * Secondary: Use existing KVM network.
 * **name**: KVM network's name.
 
-Both ansible installer can be executed simultaneously.
+Both ansible installer can be executed simultaneously, **but execute the *role: primary* first**.
 
 > :warning: Since Terraform is used, the **primary** cluster must be deleted the last. Otherwise, the delete process will be fail.
 
