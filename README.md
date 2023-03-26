@@ -31,3 +31,52 @@ To create a K8S cluster, execute:
 ```bash
 ansible-playbook main.yaml --extra-vars "k8s_cluster_name=<cluster-name>"
 ```
+
+## MultiCluster
+The installer is able to provision multiple clusters in the same KVM network. For it, under the _network_ section in the vars file, the value **existing** must be added. Let's take a look at the sample below:
+
+**cluster-1**
+
+```bash
+  network:
+    network_cidr: 192.168.100.0/24
+    domain: cluster-1.fperod.internal
+    ...
+    existing:
+      role: primary
+      name: k8s-1
+```
+
+**cluster-2**
+
+```bash
+  network:
+    network_cidr: 192.168.100.0/24
+    domain: cluster-2.fperod.internal
+    ...
+    existing:
+      role: secondary
+      name: k8s-1
+```
+
+* **network_cird**: Same value in both vars files.
+* **domain**: Same value in domain, different cluster name.
+* **role**:
+  * Primary: KVM network is created.
+  * Secondary: Use existing KVM network.
+* **name**: KVM network's name.
+
+Both ansible installer can be executed simultaneously.
+
+> :warning: Since Terraform is used, the **primary** cluster must be deleted the last. Otherwise, the delete process will be fail.
+
+## Merge kubeconfig
+The installer can merge the cluster's kubeconfig with your Kubeconfig. To do so, in the _vars_ file, enable it:
+
+```bash
+k8s:
+  ...
+  merge_kubeconfig: true
+  ...
+```
+
