@@ -2,11 +2,6 @@
 Provision a Kubernetes cluster by using [libvirt-k8s-provisioner](https://github.com/kubealex/libvirt-k8s-provisioner).
 
 ## Prerequisites
-Clone the _libvirt-k8s-provisioner_ repository:
-```bash
-git clone git@github.com:kubealex/libvirt-k8s-provisioner.git
-```
-
 Edit the [inventory](./libvirt-k8s-provisioner/inventory) file and set your KVM host.
 
 Install required collections:
