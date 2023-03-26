@@ -30,9 +30,13 @@ k8s:
     service_cidr: 10.110.0.0/16
     existing:
       role: primary
+      name: k8s-1
 
 # Choose between [calico/flannel/cilium]
     cni_plugin: cilium
+
+# Merge Kubeconfig
+  merge_kubeconfig: true
 
 # Rook configuration
 rook_ceph:
