@@ -34,8 +34,8 @@ The installer is able to provision multiple clusters in the same KVM network. Fo
 
 ```bash
   network:
-    network_cidr: 192.168.100.0/24
-    domain: cluster-1.fperod.internal
+    network_cidr: 192.168.10.0/24
+    domain: shared-domain.example.internal
     ...
     existing:
       role: primary
@@ -46,8 +46,8 @@ The installer is able to provision multiple clusters in the same KVM network. Fo
 
 ```bash
   network:
-    network_cidr: 192.168.100.0/24
-    domain: cluster-2.fperod.internal
+    network_cidr: 192.168.10.0/24
+    domain: shared-domain.example.internal
     ...
     existing:
       role: secondary
@@ -60,8 +60,6 @@ The installer is able to provision multiple clusters in the same KVM network. Fo
   * Primary: KVM network is created.
   * Secondary: Use existing KVM network.
 * **name**: KVM network's name.
-
-Both ansible installer can be executed simultaneously, **but execute the *role: primary* first**.
 
 > :warning: Since Terraform is used, the **primary** cluster must be deleted the last. Otherwise, the delete process will be fail.
 
