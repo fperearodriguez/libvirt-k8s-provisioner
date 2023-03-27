@@ -9,7 +9,9 @@ variable "additional_cluster" { default = "k8s.lab" }
 variable "create_network" {
   description = "If set to true, the network will be created"
   type = bool
+  default = true
 }
+variable network_name { default = "k8s" }
 
 provider "libvirt" {
   uri = "qemu:///system"
@@ -24,7 +26,7 @@ resource "libvirt_pool" "cluster" {
 resource "libvirt_network" "kube_network" {
   count = var.create_network ? 1 : 0
   autostart = true
-  name = var.cluster_name
+  name = var.network_name
   mode = "nat"
   domain = var.domain
   addresses = var.network_cidr
@@ -38,7 +40,7 @@ resource "libvirt_network" "kube_network" {
   dnsmasq_options {
     options  {
         option_name = "server"
-        option_value = "/${var.domain}/${cidrhost(var.network_cidr[0],1)}"
+        option_value = "/${var.network_name}/${cidrhost(var.network_cidr[0],1)}"
       }
   }
 }

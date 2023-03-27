@@ -1,6 +1,6 @@
 # General configuration
 k8s:
-  cluster_name: k8s-1
+  cluster_name: cluster-1
   cluster_os: Ubuntu
   cluster_version: "1.24"
   container_runtime: crio
@@ -24,12 +24,12 @@ k8s:
 
   network:
     network_cidr: 192.168.100.0/24
-    domain: k8s-1.fperod.internal
+    domain: cluster-1.fperod.internal
     additional_san: ""
     pod_cidr: 10.20.0.0/16
     service_cidr: 10.110.0.0/16
     existing:
-      role: primary
+      role: secondary
       name: k8s-1
 
 # Choose between [calico/flannel/cilium]
