@@ -39,7 +39,7 @@ The installer is able to provision multiple clusters in the same KVM network. Fo
     ...
     existing:
       role: primary
-      name: cluster-1
+      name: shared-domain
 ```
 
 **cluster-2**
@@ -51,11 +51,11 @@ The installer is able to provision multiple clusters in the same KVM network. Fo
     ...
     existing:
       role: secondary
-      name: cluster-1
+      name: shared-domain
 ```
 
 * **network_cird**: Same value in both vars files.
-* **domain**: Same value in domain, different cluster name.
+* **domain**: Same value in both vars files.
 * **role**:
   * Primary: KVM network is created.
   * Secondary: Use existing KVM network.
