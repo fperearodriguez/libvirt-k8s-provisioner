@@ -63,6 +63,22 @@ The installer is able to provision multiple clusters in the same KVM network. Fo
 
 > :warning: Since Terraform is used, the **primary** cluster must be deleted the last. Otherwise, the delete process will be fail.
 
+Once the vars files are set, provision both cluster:
+
+1. First, primary cluster (KVM network is created here):
+
+```bash
+ansible-playbook main.yaml --extra-vars "k8s_cluster_name=cluster-1"
+```
+
+2. Once the cluster is installed, provision the second one:
+
+```bash
+ansible-playbook main.yaml --extra-vars "k8s_cluster_name=cluster-2"
+```
+
+
+
 ## Merge kubeconfig
 The installer can merge the cluster's kubeconfig with your Kubeconfig. To do so, in the _vars_ file, enable it:
 
