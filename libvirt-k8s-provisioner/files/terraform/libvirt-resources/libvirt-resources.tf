@@ -34,7 +34,7 @@ resource "libvirt_network" "kube_network" {
 
   dns {
     enabled = true
-    local_only = true
+    local_only = false
   }
 
   dnsmasq_options {
