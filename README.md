@@ -27,31 +27,112 @@ To create a K8S cluster, execute:
 ansible-playbook main.yaml --extra-vars "k8s_cluster_name=<cluster-name>"
 ```
 
-## MultiCluster
-The installer is able to provision multiple clusters in the same KVM network. For it, under the _network_ section in the vars file, the value **existing** must be added. Let's take a look at the sample below:
+# Multiple clusters in different networks
+Follow the example above to provision multiple clusters in different networks. This is an example of network configuration for each cluster:
+
+**hub cluster**
+
+```bash
+  network:
+    network_cidr: 192.168.100.0/24
+    domain: k8s-hub.example.internal
+    additional_san: ""
+    pod_cidr: 10.20.0.0/16
+    service_cidr: 10.110.0.0/16
+    existing:
+      role: primary
+      name: k8s-hub
+```
 
 **cluster-1**
 
 ```bash
   network:
-    network_cidr: 192.168.10.0/24
-    domain: shared-domain.example.internal
-    ...
+    network_cidr: 192.168.101.0/24
+    domain: k8s-1.example.internal
+    additional_san: ""
+    pod_cidr: 10.21.0.0/16
+    service_cidr: 10.111.0.0/16
     existing:
       role: primary
-      name: shared-domain
+      name: k8s-1
 ```
 
 **cluster-2**
 
 ```bash
   network:
-    network_cidr: 192.168.10.0/24
-    domain: shared-domain.example.internal
-    ...
+    network_cidr: 192.168.102.0/24
+    domain: k8s-2.example.internal
+    additional_san: ""
+    pod_cidr: 10.22.0.0/16
+    service_cidr: 10.112.0.0/16
+    existing:
+      role: primary
+      name: k8s-2
+```
+
+Provision the **hub cluster**:
+```bash
+ansible-playbook main.yml --extra-vars "k8s_cluster_name=k8s-hub"
+```
+
+Provision the **cluster-1** cluster:
+```bash
+ansible-playbook main.yml --extra-vars "k8s_cluster_name=k8s-1"
+```
+
+Provision the **cluster-2** cluster:
+```bash
+ansible-playbook main.yml --extra-vars "k8s_cluster_name=k8s-2"
+```
+
+> :warning: [Routed network](https://libvirt.org/formatnetwork.html#routed-network-config) is used in this scenario, so it requires routing configuration in the host server.
+
+Following the example below:
+| Name                 | Value              |
+| -----------          | -----------        |
+| Host interface       | eth0               |
+| KVM interface        | virbr1             |
+
+Execute in the host server:
+```bash
+sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+sudo iptables -A INPUT -i virbr1 -j ACCEPT
+iptables -A INPUT -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+sudo iptables -A INPUT -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+sudo iptables -A OUTPUT -j ACCEPT
+```
+
+# Multiple clusters in same network
+Follow the example above to provision multiple clusters in the same network. This is an example of network configuration for each cluster:
+
+**cluster-1**
+
+```bash
+  network:
+    network_cidr: 192.168.100.0/24
+    domain: k8s.example.internal
+    additional_san: ""
+    pod_cidr: 10.21.0.0/16
+    service_cidr: 10.111.0.0/16
+    existing:
+      role: primary
+      name: k8s
+```
+
+**cluster-2**
+
+```bash
+  network:
+    network_cidr: 192.168.100.0/24
+    domain: k8s.example.internal
+    additional_san: ""
+    pod_cidr: 10.22.0.0/16
+    service_cidr: 10.112.0.0/16
     existing:
       role: secondary
-      name: shared-domain
+      name: k8s
 ```
 
 * **network_cird**: Same value in both vars files.
@@ -77,9 +158,7 @@ ansible-playbook main.yaml --extra-vars "k8s_cluster_name=cluster-1"
 ansible-playbook main.yaml --extra-vars "k8s_cluster_name=cluster-2"
 ```
 
-
-
-## Merge kubeconfig
+# Merge kubeconfig
 The installer can merge the cluster's kubeconfig with your Kubeconfig. To do so, in the _vars_ file, enable it:
 
 ```bash
@@ -87,5 +166,11 @@ k8s:
   ...
   merge_kubeconfig: true
   ...
+```
+
+# Cleanup
+To delete an existing cluster:
+```bash
+ansible-playbook 99_cleanup.yml --extra-vars "k8s_cluster_name=<cluster-name>"
 ```
 
