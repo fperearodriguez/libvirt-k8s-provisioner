@@ -105,7 +105,7 @@ sudo iptables -A OUTPUT -j ACCEPT
 ```
 
 # Multiple clusters in same network
-Follow the example above to provision multiple clusters in the same network. This is an example of network configuration for each cluster:
+Follow the example below to provision multiple clusters in the same network. This is an example of network configuration for each cluster:
 
 **cluster-1**
 

@@ -27,7 +27,7 @@ resource "libvirt_network" "kube_network" {
   count = var.create_network ? 1 : 0
   autostart = true
   name = var.network_name
-  mode = "nat"
+  mode = "route"
   domain = var.domain
   addresses = var.network_cidr
   bridge = var.cluster_name
