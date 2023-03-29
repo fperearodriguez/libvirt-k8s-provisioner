@@ -28,7 +28,7 @@ ansible-playbook main.yaml --extra-vars "k8s_cluster_name=<cluster-name>"
 ```
 
 # Multiple clusters in different networks
-Follow the example above to provision multiple clusters in different networks. This is an example of network configuration for each cluster:
+Follow the example below to provision multiple clusters in different networks. This is an example of network configuration for each cluster:
 
 **hub cluster**
 
